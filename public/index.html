@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Envoyer une vidéo</title>
+</head>
+<body>
+  <h1>Envoyer une vidéo</h1>
+  <form action="/upload" method="post" enctype="multipart/form-data">
+    <label for="video">Choisir une vidéo :</label>
+    <input type="file" id="video" name="video" accept="video/*" required>
+    <button type="submit">Envoyer</button>
+  </form>
+</body>
+</html>
