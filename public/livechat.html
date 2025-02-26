@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Chat - Vidéo</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+    /* Le conteneur est positionné pour couvrir toute la fenêtre */
+    #videoContainer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    /* La vidéo occupe toute la taille du conteneur et s'adapte sans déformer son ratio */
+    video {
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="videoContainer"></div>
+  
+  <!-- Inclusion du client Socket.IO -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const video = document.createElement('video');
+      video.src = `/uploads/default.mp4`;
+      video.autoplay = true;
+      video.controls = true;
+      
+      // Lorsque la vidéo se termine, elle est retirée du DOM
+      video.addEventListener('ended', () => {
+        video.remove();
+      });
+      
+      // On vide le conteneur et on y insère la nouvelle vidéo
+      const container = document.getElementById('videoContainer');
+      container.innerHTML = "";
+      container.appendChild(video);
+  </script>
+  <script>
+    const socket = io();
+    
+    // Lorsque le serveur envoie l'événement "newVideo", on affiche la vidéo
+    socket.on('newVideo', (data) => {
+      console.log("Nouvelle vidéo reçue :", data);
+      
+      // Créer l'élément vidéo
+      const video = document.createElement('video');
+      video.src = `/uploads/${data.filename}`;
+      video.autoplay = true;
+    //   video.controls = true;
+      
+      // Lorsque la vidéo se termine, elle est retirée du DOM
+      video.addEventListener('ended', () => {
+        video.remove();
+      });
+      
+      // On vide le conteneur et on y insère la nouvelle vidéo
+      const container = document.getElementById('videoContainer');
+      container.innerHTML = "";
+      container.appendChild(video);
+    });
+  </script>
+</body>
+</html>
