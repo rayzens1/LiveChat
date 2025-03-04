@@ -40,6 +40,11 @@ const commands = [
         .setDescription('La vidéo à télécharger')
         .setRequired(true)
     )
+    .addStringOption(option =>
+      option.setName('description')
+        .setDescription('Texte à afficher en bas de la vidéo')
+        .setRequired(false)
+    )
     .toJSON()
 ];
 
@@ -78,6 +83,7 @@ client.on('interactionCreate', async interaction => {
     }
     
     const videoUrl = attachment.url;
+    const videoDescription = interaction.options.getString('description') || '';
     
     // Création d'un nom de fichier basé sur le timestamp actuel
     const timestamp = new Date().getTime();
@@ -111,7 +117,12 @@ client.on('interactionCreate', async interaction => {
 
       console.log("EMITTING NEW VIDEO");
 
-      io.emit('newVideo', { filename });
+      // Envoi la vidéo dans la socket newVideo au html
+      if(videoDescription !== '') {
+        io.emit('newVideo', { filename, text: videoDescription });
+      } else {
+        io.emit('newVideo', { filename });
+      }
       
       await interaction.reply(`Vidéo téléchargée avec succès et renommée en : \`${filename}\``);
     } catch (err) {

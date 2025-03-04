@@ -26,6 +26,7 @@
     /* La vidéo occupe toute la taille du conteneur et s'adapte sans déformer son ratio */
     video {
       height: 100%;
+      width: auto;
       object-fit: cover;
       display: block;
     }
@@ -63,17 +64,42 @@
       const video = document.createElement('video');
       video.src = `/uploads/${data.filename}`;
       video.autoplay = true;
-    //   video.controls = true;
+      // video.controls = true;
       
       // Lorsque la vidéo se termine, elle est retirée du DOM
       video.addEventListener('ended', () => {
         video.remove();
+        if (textDiv) {
+          textDiv.remove();
+        }
       });
       
       // On vide le conteneur et on y insère la nouvelle vidéo
       const container = document.getElementById('videoContainer');
       container.innerHTML = "";
       container.appendChild(video);
+
+      // Si un texte est fourni, on crée un élément pour l'afficher
+      let textDiv;
+      if (data.text) {
+        textDiv = document.createElement('div');
+        textDiv.innerHTML = data.text;
+        
+        // Positionnement en bas, centré horizontalement
+        textDiv.style.position = 'absolute';
+        textDiv.style.bottom = '15px'; // Ajustez cette valeur selon le margin désiré
+        textDiv.style.left = '50%';
+        textDiv.style.transform = 'translateX(-50%)';
+        
+        // Styles pour une meilleure lisibilité
+        textDiv.style.color = '#fff';
+        textDiv.style.backgroundColor = 'rgba(0, 0, 0, 1)';
+        textDiv.style.fontSize = '2.5rem';
+        textDiv.style.zIndex = "10"; // Au-dessus de la vidéo
+        textDiv.style.maxHeight = "20%";        
+        container.appendChild(textDiv);
+      }
+      
     });
   </script>
 </body>
